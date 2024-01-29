@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout::setFragment(~{this::content})}">
+	<th:block th:fragment="content">
+		<div class="container-md">
+			<br>
+			<h2>Detail Page</h2>
+			<br>
+			<form action="/board/modify" method="post" id="modForm">
+				<table class="table">
+					<tr>
+						<th>Bno</th>
+						<td><input type="text" name="bno" class="form-control" id="bno" th:value="${bdto.bvo.bno }" readonly="readonly"></td>
+					</tr>
+					<tr>
+						<th>Title</th>
+						<td><input type="text" name="title" class="form-control" id="title" th:value="${bdto.bvo.title }" readonly="readonly"></td>
+					</tr>
+					<tr>
+						<th>Writer</th>
+						<td><input type="text" name="writer" class="form-control" id="writer" th:value="${bdto.bvo.writer }" readonly="readonly"></td>
+					</tr>
+					<tr>
+						<th>Content</th>
+						<td><textarea name="content" class="form-control" id="content" rows="3" readonly="readonly">[[${bdto.bvo.content }]]</textarea></td>
+					</tr>
+					<tr>
+						<th>Reg_date</th>
+						<td><input type="text" name="reg_date" class="form-control" id="regAt" th:value="${bdto.bvo.regAt }" readonly="readonly"></td>
+					</tr>
+					<tr>
+						<th>mod_at</th>
+						<td><input type="text" name="read_count" class="form-control" id="modAt" th:value="${bdto.bvo.modAt }" readonly="readonly"></td>
+					</tr>
+					
+				</table>
+				
+				<!-- 파일 출력 라인 -->
+				<div class="mb-3">
+					<ul class="list-group list-flush">
+					  <li th:each="fvo:${bdto.flist}" class="list-group-item"> 
+					  	<div th:if="${fvo.fileType > 0}" class="mb-3">
+					  		<img th:src="@{|/upload/${fvo.saveDir}/${fvo.uuid}_th_${fvo.fileName}|}">
+					  	</div>
+					  	<div th:unless="${fvo.fileType > 0}" class="mb-3">
+					  		<!-- 일반 파일 표시할 아이콘 -->
+  							<a href="/upload/${fvo.saveDir }/${fvo.uuid}_${fvo.fileName}" download="${fvo.fileName }">
+	  							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-image" viewBox="0 0 16 16">
+								  <path d="M8.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+								  <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v8l-2.083-2.083a.5.5 0 0 0-.76.063L8 11 5.835 9.7a.5.5 0 0 0-.611.076L3 12V2z"/>
+								</svg>]
+							</a>
+					  	</div>
+						<div class="ms-2 me-auto">
+						  	<div class="fw-bold">[[${fvo.fileName}]]</div>
+						  	[[${fvo.regAt}]]							
+						</div>
+					  	<span class="badge text-bg-warning">[[${fvo.fileSize}]]Byte</span>
+					  </li>
+					</ul>
+				</div>
+				
+			</form>
+				
+			<button type="button" id="listBtn" class="btn btn-outline-primary">리스트로 이동</button>
+			<!-- 버튼 하나를 생성하여 수정을 완료하는 버튼으로 사용 -->
+			<button type="button" id="modBtn" class="btn btn-outline-success">수정</button>
+			<button type="button" id="delBtn" class="btn btn-outline-danger">삭제</button>
+			
+			
+			<!-- <a th:href="@{/board/list}"><button type="button" id="listBtn" class="btn btn-outline-primary">리스트로 이동</button></a>
+			<a th:href="@{/board/modify(bno=${bvo.bno })}"><button type="button" id="modBtn" class="btn btn-outline-success">수정</button></a>
+			<a th:href="@{/board/delete(bno=${bvo.bno })}"><button type="button" id="delBtn" class="btn btn-outline-danger">삭제</button></a>
+			 -->
+				 
+			<form action="/board/delete" method="get" id="delForm" style="display:none;">
+				<input type="hidden" name="bno" th:value="${bdto.bvo.bno}">
+			</form>
+			
+			
+			<!-- 댓글 등록 라인 -->
+			<div class="input-group mb-3">
+			  <span class="input-group-text" id="cmtWriter">Anonymous</span>
+			  <input type="text" class="form-control" id="cmtText" aria-label="Amount (to the nearest dollar)">
+			  <button type="button" class="btn btn-outline-success" id="cmtPostBtn">Post</button>
+			</div>
+			
+			
+			<!-- 댓글 표시 라인 -->
+			<ul class="list-group" id="cmtListArea" >
+			  <li class="list-group-item"> 
+			  	<div class="mb-3">
+			  		<div class="fw-bold">Writer</div>
+			  		content
+			  	</div>
+			  	<span class="badge text-bg-warning">modAt</span>
+			  </li>
+			</ul>
+			
+			<!-- 댓글 더보기 버튼 -->
+			<div>
+				<button type="button" class="btn btn-outline-dark" id="moreBtn" data-page="1" style="visibility:hidden">MORE+</button>
+			</div>
+			
+			<!-- 모달창 라인 -->
+			<div class="modal" id="myModal" tabindex="-1">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title">Writer</h5>
+			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			      </div>
+			      <div class="modal-body">
+			        <div class="input-group mb-3">
+			        	<input type="text" class="form-control" id="cmtTextMod">
+				        <button type="button" class="btn btn-primary" id="cmtModBtn">Post</button>
+			        </div>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			
+			
+			<script th:inline="javascript">
+				const bnoVal = `[[${bdto.bvo.bno}]]`;
+				console.log(bnoVal);
+			</script>
+			<script th:src="@{/js/boardDetail.js}"></script>
+			<script th:src="@{/js/boardComment.js}"></script>
+			<script th:inline="javascript">
+				spreadCommentList(bnoVal);
+			</script>
+		</div>
+		
+	</th:block>
+</th:block>
