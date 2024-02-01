@@ -1,0 +1,50 @@
+-- 2024-01-23 --
+create table board(
+bno bigint auto_increment, 
+title varchar(200) not null, 
+writer varchar(200) not null, 
+content text not null, 
+reg_at datetime default now(), 
+mod_at datetime default now(), 
+primary key(bno));
+
+
+-- 2024-01-25 --
+create table comment(
+cno bigint auto_increment, 
+bno bigint not null, 
+writer varchar(200) not null, 
+content text not null, 
+reg_at datetime default now(), 
+mod_at datetime default now(), 
+primary key(cno));
+
+
+-- 2024-01-29 --
+create table file(
+uuid varchar(256) not null, 
+save_dir varchar(256) not null, 
+file_name varchar(256) not null, 
+file_type int(1) default 0, 
+bno bigint not null, 
+file_size bigint not null, 
+reg_at datetime default now(), 
+primary key(uuid));
+
+
+-- 2024-01-30 --
+create table member(
+email varchar(200) not null, 
+pwd varchar(256) not null, 
+nick_name varchar(100), 
+reg_at datetime default now(), 
+last_login datetime, 
+primary key(email));
+
+
+create table auth_member(
+email varchar(200) not null, 
+auth varchar(100) not null, 
+foreign key(email) references member(email));
+
+

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout::setFragment(~{this::content})}">
+	<th:block th:fragment="content">
+	<th:block th:with="bdto=${bdto}">
+		<div class="container-md">
+			<br>
+			<h2>Detail Page</h2>
+			<br>
+			<form action="/board/modify" method="post" id="modForm">
+				<table class="table">
+					<tr>
+						<th>Bno</th>
+						<td><input type="text" name="bno" class="form-control" id="bno" th:value="${bdto.bno }" readonly="readonly"></td>
+					</tr>
+					<tr>
+						<th>Title</th>
+						<td><input type="text" name="title" class="form-control" id="title" th:value="${bdto.title }" readonly="readonly"></td>
+					</tr>
+					<tr>
+						<th>Writer</th>
+						<td><input type="text" name="writer" class="form-control" id="writer" th:value="${bdto.writer }" readonly="readonly"></td>
+					</tr>
+					<tr>
+						<th>Content</th>
+						<td><textarea name="content" class="form-control" id="content" rows="3" readonly="readonly">[[${bdto.content }]]</textarea></td>
+					</tr>
+					<tr>
+						<th>Reg_date</th>
+						<td><input type="text" name="reg_date" class="form-control" id="regAt" th:value="${bdto.regAt }" readonly="readonly"></td>
+					</tr>
+					<tr>
+						<th>mod_at</th>
+						<td><input type="text" name="read_count" class="form-control" id="modAt" th:value="${bdto.modAt }" readonly="readonly"></td>
+					</tr>
+					
+				</table>
+				
+				<button type="button" id="listBtn" class="btn btn-outline-primary">리스트로 이동</button>
+				<!-- 버튼 하나를 생성하여 수정을 완료하는 버튼으로 사용 -->
+				<button type="button" id="modBtn" class="btn btn-outline-success">수정</button>
+				<button type="button" id="delBtn" class="btn btn-outline-danger">삭제</button>
+				
+				
+			</form>
+			
+			<form action="/board/delete" method="post" id="delForm" style="display:none;">
+				<input type="hidden" name="bno" th:value="${bdto.bno}">
+			</form>
+			
+			<script th:src="@{/js/boardDetail.js}"></script>
+		</div>
+	</th:block>
+</th:block>
+</th:block>
+</html>
